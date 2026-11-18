@@ -10,21 +10,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Unzip project
-        run: unzip -q KurdKeyWeb.zip -d proj
+        run: unzip -q -o KurdKeyNative.zip -d proj
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-      - name: Accept licenses
-        run: yes | sdkmanager --licenses > /dev/null || true
+      - name: Accept Android licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.10.2
       - name: Build APK
-        working-directory: proj/KurdKeyWeb
-        run: gradle assembleDebug --no-daemon
+        working-directory: proj/KurdKeyNative
+        run: gradle assembleRelease --no-daemon --stacktrace
       - name: Rename
-        run: cp proj/KurdKeyWeb/app/build/outputs/apk/debug/app-debug.apk KurdishKeyboard.apk
+        run: cp proj/KurdKeyNative/app/build/outputs/apk/release/app-release.apk KurdishKeyboard.apk
       - uses: actions/upload-artifact@v4
         with:
           name: KurdishKeyboard-apk
